@@ -1,0 +1,22 @@
+version: '3'
+services:
+  postgres:
+    image: 'postgres'
+    container_name: 'control_bikes'
+    environment:
+      POSTGRES_DB: 'controlBikes'
+      POSTGRES_USER: 'controlBikesUser'
+      POSTGRES_PASSWORD: 'controlBikesPassword'
+      ALLOW_IP_RANGE: '0.0.0.0/0'
+    ports:
+      - '5432:5432'
+  postgresTest:
+    image: 'postgres'
+    container_name: 'control_bikes_test_postgres'
+    environment:
+      POSTGRES_DB: 'controlBikesTest'
+      POSTGRES_USER: 'controlBikesUserTest'
+      POSTGRES_PASSWORD: 'controlBikesPasswordTest'
+      ALLOW_IP_RANGE: '0.0.0.0/0'
+    ports:
+      - '5433:5432'

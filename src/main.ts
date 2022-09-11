@@ -1,28 +1,17 @@
-import { ValidationPipe } from '@nestjs/common';
-import { ConfigType } from '@nestjs/config';
+import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import appConfiguration from './config/app.configuration';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const appConfig: ConfigType<typeof appConfiguration> = app.get(
-    appConfiguration.KEY,
-  );
-  const port = appConfig.port;
+  const configService = app.get(ConfigService);
 
-  app.enableCors();
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      transform: true,
-      forbidNonWhitelisted: true,
-      transformOptions: {
-        enableImplicitConversion: true,
-      },
-    }),
-  );
+  const enableCors = configService.get<boolean>('ENABLE_CORS');
+  const port = configService.get<number>('DATABASE_PORT');
 
+  if (enableCors) {
+    app.enableCors();
+  }
   await app.listen(port);
 }
 bootstrap();
