@@ -3,6 +3,7 @@ import { ConfigModule, ConfigType } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import config from './config';
 import { enviroments } from './enviroments';
+import { BikesModule } from 'src/bikes/bikes.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -25,6 +26,7 @@ import { enviroments } from './enviroments';
         };
       },
     }),
+    BikesModule,
   ],
   controllers: [],
   providers: [],
