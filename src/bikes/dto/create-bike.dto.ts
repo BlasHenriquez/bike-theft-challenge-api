@@ -28,3 +28,14 @@ export class CreateBikeDto {
   @IsEnum(BikesTypes)
   type: BikesTypes;
 }
+
+export class DefaultColumnsResponseBike extends CreateBikeDto {
+  @ApiProperty()
+  readonly id: number;
+
+  @ApiProperty()
+  readonly createdAt: Date;
+
+  @ApiProperty()
+  readonly updatedAt: Date;
+}
