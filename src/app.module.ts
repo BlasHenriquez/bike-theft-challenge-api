@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import config from './config';
 import { enviroments } from './enviroments';
 import { BikesModule } from './bikes/bikes.module';
+import { BikeOwnersModule } from './bike-owners/bike-owners.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { BikesModule } from './bikes/bikes.module';
       },
     }),
     BikesModule,
+    BikeOwnersModule,
   ],
   controllers: [],
   providers: [],
