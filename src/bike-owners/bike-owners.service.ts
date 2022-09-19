@@ -56,14 +56,16 @@ export class BikeOwnersService {
     bikeOwnerId: number;
     updateBikeOwnerDto: UpdateBikeOwnerDto;
   }) {
-    const bike = await this.bikeOwnerRepository.preload({
+    const bikeOwner = await this.bikeOwnerRepository.preload({
       id: bikeOwnerId,
       ...updateBikeOwnerDto,
     });
-    if (!bike) {
-      throw new NotFoundException(`Bike with id ${bikeOwnerId} does not exist`);
+    if (!bikeOwner) {
+      throw new NotFoundException(
+        `Bike owner with id ${bikeOwnerId} does not exist`,
+      );
     }
-    return this.bikeOwnerRepository.save(bike);
+    return this.bikeOwnerRepository.save(bikeOwner);
   }
 
   async remove({ bikeOwnerId }: { bikeOwnerId: number }) {
