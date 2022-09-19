@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateBikeDto } from './dto/create-bike.dto';
@@ -12,6 +16,15 @@ export class BikesService {
     private readonly bikeRepository: Repository<Bike>,
   ) {}
   async create(createBikeDto: CreateBikeDto) {
+    const bikeOwner = await this.bikeRepository.findOne({
+      license: createBikeDto.license,
+    });
+
+    if (bikeOwner) {
+      throw new ConflictException(
+        `This license ${createBikeDto.license} already exist`,
+      );
+    }
     const bike = this.bikeRepository.create(createBikeDto);
 
     return this.bikeRepository.save(bike);

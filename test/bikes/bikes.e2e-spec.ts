@@ -46,13 +46,18 @@ describe('[Feature] bike - /bikes', () => {
   it('Create bike [POST /] fails because repeat license', async () => {
     const { bike } = await runSeeder(CreateBikeTest);
 
+    delete bike.id;
+    delete bike.createdAt;
+    delete bike.updatedAt;
+
     const bikeWithRepeatLicense = {
       ...bike,
       description: 'fake-repeat',
       color: 'WHITE',
     };
     const { statusCode } = await createBike(app, bikeWithRepeatLicense);
-    expect(statusCode).toEqual(HttpStatus.BAD_REQUEST);
+
+    expect(statusCode).toEqual(HttpStatus.CONFLICT);
   });
 
   it('Create bike [POST /] fails because send datas is incomplete', async () => {
