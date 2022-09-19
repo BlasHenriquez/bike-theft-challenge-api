@@ -5,6 +5,7 @@ import config from './config';
 import { enviroments } from './enviroments';
 import { BikesModule } from './bikes/bikes.module';
 import { BikeOwnersModule } from './bike-owners/bike-owners.module';
+import { PoliceOfficersModule } from './police-officers/police-officers.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { BikeOwnersModule } from './bike-owners/bike-owners.module';
     }),
     BikesModule,
     BikeOwnersModule,
+    PoliceOfficersModule,
   ],
   controllers: [],
   providers: [],
