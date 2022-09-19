@@ -3,7 +3,9 @@ import { Factory, Seeder } from 'typeorm-seeding';
 
 export default class CreateBikeOwnerTest implements Seeder {
   public async run(factory: Factory): Promise<any> {
-    const bikeOwner = await factory(BikeOwner)().create();
+    const bikeOwner = await factory(BikeOwner)({
+      password: 'Prueba123>',
+    }).create();
 
     return { bikeOwner };
   }

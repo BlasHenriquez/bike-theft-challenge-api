@@ -1,17 +1,23 @@
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { clearDatabase, initTestApp } from '../../test/helpers';
 import { runSeeder, useSeeding } from 'typeorm-seeding';
-import {
-  createBikeOwner,
-  getBikeOwners,
-  getBikeOwner,
-  updateBikeOwner,
-  deleteBikeOwner,
-} from './api';
+
 import { Connection } from 'typeorm';
-import { bikeOwner, fakeBikeOwner, incompleteBikeOwner } from './mock';
+import {
+  bikeOwner,
+  bikeOwnerWeakPassword,
+  fakeBikeOwner,
+  incompleteBikeOwner,
+} from './mock';
 import CreateFiveBikeOwnersTest from '../../db/seeds/test/createFiveBikeOwners';
 import CreateBikeOwnerTest from '../../db/seeds/test/createBikeOwner';
+import {
+  createBikeOwner,
+  deleteBikeOwner,
+  getBikeOwner,
+  getBikeOwners,
+  updateBikeOwner,
+} from './api';
 
 describe('[Feature] bikeOwners - /bike-owners', () => {
   let app: INestApplication;
@@ -50,12 +56,19 @@ describe('[Feature] bikeOwners - /bike-owners', () => {
 
     const bikeOwnerWithRepeatEmail = {
       ...bikeOwner,
+      password: 'Prueba123>',
       firstName: 'fake-repeat',
       lastName: 'fake',
     };
     const { statusCode } = await createBikeOwner(app, bikeOwnerWithRepeatEmail);
 
     expect(statusCode).toEqual(HttpStatus.CONFLICT);
+  });
+
+  it('Create police officer [POST /] fails because password is weak', async () => {
+    const { statusCode } = await createBikeOwner(app, bikeOwnerWeakPassword);
+
+    expect(statusCode).toEqual(HttpStatus.BAD_REQUEST);
   });
 
   it('Create bike owner [POST /] fails because send datas with fake column', async () => {
@@ -70,45 +83,37 @@ describe('[Feature] bikeOwners - /bike-owners', () => {
     expect(statusCode).toEqual(HttpStatus.BAD_REQUEST);
   });
 
-  it('Get bikes owner [GET /]', async () => {
+  it('Get bike owners [GET /]', async () => {
     const { bikeOwners } = await runSeeder(CreateFiveBikeOwnersTest);
 
     const { statusCode, body } = await getBikeOwners(app);
 
     expect(statusCode).toBe(HttpStatus.OK);
     expect(body.length).toBe(5);
-    expect(body[0].license).toBe(bikeOwners[0].license);
-    expect(body[0].description).toBe(bikeOwners[0].description);
-    expect(body[0].color).toBe(bikeOwners[0].color);
-    expect(body[0].type).toBe(bikeOwners[0].type);
-    expect(new Date(body[0].date).getTime()).toBe(
-      new Date(bikeOwners[0].date).getTime(),
-    );
+    expect(body[0].email).toBe(bikeOwners[0].email);
+    expect(body[0].firstName).toBe(bikeOwners[0].firstName);
+    expect(body[0].lastName).toBe(bikeOwners[0].lastName);
   });
 
-  it('Get bikes owner [GET /] returns empty', async () => {
+  it('Get bike owners [GET /] returns empty', async () => {
     const { statusCode, body } = await getBikeOwners(app);
 
     expect(statusCode).toBe(HttpStatus.OK);
     expect(body.length).toBe(0);
   });
 
-  it('Get one bike owner [GET /bikes/:bikeOwnerId]', async () => {
+  it('Get one bike owner [GET /bike-owner/:bikeOwnerId]', async () => {
     const { bikeOwner } = await runSeeder(CreateBikeOwnerTest);
 
     const { statusCode, body } = await getBikeOwner(app, bikeOwner.id);
 
     expect(statusCode).toBe(HttpStatus.OK);
-    expect(body.license).toBe(bikeOwner.license);
-    expect(body.description).toBe(bikeOwner.description);
-    expect(body.color).toBe(bikeOwner.color);
-    expect(body.type).toBe(bikeOwner.type);
-    expect(new Date(body.date).getTime()).toBe(
-      new Date(bikeOwner.date).getTime(),
-    );
+    expect(body.email).toBe(bikeOwner.email);
+    expect(body.firstName).toBe(bikeOwner.firstName);
+    expect(body.lastName).toBe(bikeOwner.lastName);
   });
 
-  it('Get one bike owner [GET /bikes/:bikeOwnerId] fails because id does not exist', async () => {
+  it('Get one bike owner [GET /bike-owner/:bikeOwnerId] fails because id does not exist', async () => {
     await runSeeder(CreateBikeOwnerTest);
 
     const { statusCode } = await getBikeOwner(app, 0);
@@ -116,7 +121,7 @@ describe('[Feature] bikeOwners - /bike-owners', () => {
     expect(statusCode).toBe(HttpStatus.NOT_FOUND);
   });
 
-  it('Get one bike owner [GET /bikes/:bikeOwnerId] fails because params is not a number', async () => {
+  it('Get one bike owner [GET /bike-owner/:bikeOwnerId] fails because params is not a number', async () => {
     await runSeeder(CreateBikeOwnerTest);
 
     const { statusCode } = await getBikeOwner(app, 'fake-id');

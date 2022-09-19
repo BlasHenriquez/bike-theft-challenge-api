@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, Matches } from 'class-validator';
 
 export class CreateBikeOwnerDto {
   @ApiProperty()
@@ -10,6 +10,12 @@ export class CreateBikeOwnerDto {
 
   @ApiProperty()
   @IsString()
+  @Matches(
+    /^(?=.*\d)(?=.*[\u0021-\u002b\u003c-\u0040])(?=.*[A-Z])(?=.*[a-z])\S{8,16}$/,
+    {
+      message: 'password too weak',
+    },
+  )
   @IsNotEmpty()
   readonly password: string;
 
