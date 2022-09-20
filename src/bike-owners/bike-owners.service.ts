@@ -39,6 +39,13 @@ export class BikeOwnersService {
     return await this.bikeOwnerRepository.find();
   }
 
+  async findBikeOwnerByEmailAndGetPassword(email: string) {
+    return await this.bikeOwnerRepository.findOne({
+      select: ['id', 'password'],
+      where: { email },
+    });
+  }
+
   async findOne({ bikeOwnerId }: { bikeOwnerId: number }) {
     const bikeOwner = await this.bikeOwnerRepository.findOne(bikeOwnerId);
 

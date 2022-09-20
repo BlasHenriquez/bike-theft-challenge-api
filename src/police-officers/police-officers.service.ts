@@ -41,6 +41,13 @@ export class PoliceOfficersService {
     return await this.policeOfficerRepository.find();
   }
 
+  async findPoliceByEmailAndGetPassword(email: string) {
+    return await this.policeOfficerRepository.findOne({
+      select: ['id', 'password', 'role'],
+      where: { email },
+    });
+  }
+
   async findOne({ policeOfficerId }: { policeOfficerId: number }) {
     const policeOfficer = await this.policeOfficerRepository.findOne(
       policeOfficerId,
