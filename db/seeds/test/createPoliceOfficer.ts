@@ -3,7 +3,9 @@ import { PoliceOfficer } from '../../../src/police-officers/entities/police-offi
 
 export default class CreatePoliceOfficerTest implements Seeder {
   public async run(factory: Factory): Promise<any> {
-    const policeOfficer = await factory(PoliceOfficer)().create();
+    const policeOfficer = await factory(PoliceOfficer)({
+      password: 'Prueba123>',
+    }).create();
 
     return { policeOfficer };
   }
