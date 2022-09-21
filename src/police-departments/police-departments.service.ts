@@ -53,6 +53,10 @@ export class PoliceDepartmentsService {
     return department;
   }
 
+  async findByIds({ departments }: { departments: number[] }) {
+    return await this.policeDepartmentRepository.findByIds(departments);
+  }
+
   async update({
     departmentId,
     updatePoliceDepartmentDto,

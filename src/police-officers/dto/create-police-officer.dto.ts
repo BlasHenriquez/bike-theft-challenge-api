@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
+  IsArray,
   IsEmail,
   IsEnum,
   IsNotEmpty,
@@ -47,6 +48,11 @@ export class CreatePoliceOfficerDto {
   @IsOptional()
   @IsEnum(StatusPolice)
   status: StatusPolice;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsArray()
+  policeDepartment: number[];
 }
 
 export class DefaultColumnsResponsePoliceOfficer extends CreatePoliceOfficerDto {

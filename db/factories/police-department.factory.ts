@@ -7,5 +7,7 @@ define(PoliceDepartment, (_, context: Partial<PoliceDepartment>) => {
 
   policeDepartment.name = context?.name || faker.name.firstName();
 
+  policeDepartment.policeOfficer = context?.policeOfficer;
+
   return policeDepartment;
 });

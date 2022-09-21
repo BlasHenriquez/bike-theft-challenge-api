@@ -14,5 +14,7 @@ define(PoliceOfficer, (_, context: Partial<PoliceOfficer>) => {
   policeOfficer.status = context?.status || StatusPolice.FREE;
   policeOfficer.role = context?.role || Role.POLICE;
 
+  policeOfficer.policeDepartment = context?.policeDepartment;
+
   return policeOfficer;
 });
