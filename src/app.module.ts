@@ -7,6 +7,7 @@ import { BikesModule } from './bikes/bikes.module';
 import { BikeOwnersModule } from './bike-owners/bike-owners.module';
 import { PoliceOfficersModule } from './police-officers/police-officers.module';
 import { AuthModule } from './auth/auth.module';
+import { PoliceDepartmentsModule } from './police-departments/police-departments.module';
 import * as Joi from 'joi';
 
 @Module({
@@ -20,7 +21,7 @@ import * as Joi from 'joi';
         ACCESS_TOKEN_EXPIRATION: Joi.string().required(),
       }),
       validationOptions: {
-        abortEarly: true, //when true, stops validation on the first error, otherwise returns all the errors found. Defaults to true.
+        abortEarly: true,
       },
     }),
     TypeOrmModule.forRootAsync({
@@ -42,6 +43,7 @@ import * as Joi from 'joi';
     BikeOwnersModule,
     PoliceOfficersModule,
     AuthModule,
+    PoliceDepartmentsModule,
   ],
   controllers: [],
   providers: [],
