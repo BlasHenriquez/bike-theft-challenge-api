@@ -1,8 +1,14 @@
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 
-export const createBike = (app: INestApplication, bike: any) =>
-  request(app.getHttpServer()).post(`/bikes`).send(bike);
+export const createBike = (
+  app: INestApplication,
+  bikeOwnerId: any,
+  bike: any,
+) =>
+  request(app.getHttpServer())
+    .post(`/bikes/bike-owner/${bikeOwnerId}`)
+    .send(bike);
 
 export const getBikes = (app: INestApplication) =>
   request(app.getHttpServer()).get(`/bikes`);

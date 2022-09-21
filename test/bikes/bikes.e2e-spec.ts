@@ -6,6 +6,7 @@ import { createBike, deleteBike, getBike, getBikes, updateBike } from './api';
 import { Connection } from 'typeorm';
 import { bike, fakeBike, incompleteBike } from './mock';
 import CreateFiveBikesTest from '../../db/seeds/test/createFiveBikes';
+import CreateBikeOwnerTest from '../../db/seeds/test/createBikeOwner';
 
 describe('[Feature] bike - /bikes', () => {
   let app: INestApplication;
@@ -27,41 +28,61 @@ describe('[Feature] bike - /bikes', () => {
   });
 
   it('Create bike [POST /]', async () => {
-    const { statusCode, body } = await createBike(app, bike);
+    const { bikeOwner } = await runSeeder(CreateBikeOwnerTest);
+
+    const { statusCode, body } = await createBike(app, bikeOwner.id, bike);
 
     expect(statusCode).toEqual(HttpStatus.CREATED);
     expect(body.license).toBe(bike.license);
     expect(body.description).toBe(bike.description);
     expect(body.color).toBe(bike.color);
     expect(body.type).toBe(bike.type);
+    expect(body.bikeOwner.id).toBe(bikeOwner.id);
     expect(new Date(body.date).getTime()).toBe(new Date(bike.date).getTime());
   });
 
   it('Create bike [POST /] fails because send datas with fake column', async () => {
-    const { statusCode } = await createBike(app, fakeBike);
+    const { bikeOwner } = await runSeeder(CreateBikeOwnerTest);
+    const { statusCode } = await createBike(app, bikeOwner.id, fakeBike);
 
     expect(statusCode).toEqual(HttpStatus.BAD_REQUEST);
   });
 
   it('Create bike [POST /] fails because repeat license', async () => {
+    const { bikeOwner } = await runSeeder(CreateBikeOwnerTest);
+
     const { bike } = await runSeeder(CreateBikeTest);
 
     delete bike.id;
     delete bike.createdAt;
     delete bike.updatedAt;
+    delete bike.bikeOwner;
 
     const bikeWithRepeatLicense = {
       ...bike,
       description: 'fake-repeat',
       color: 'WHITE',
     };
-    const { statusCode } = await createBike(app, bikeWithRepeatLicense);
+
+    const { statusCode } = await createBike(
+      app,
+      bikeOwner.id,
+      bikeWithRepeatLicense,
+    );
 
     expect(statusCode).toEqual(HttpStatus.CONFLICT);
   });
 
   it('Create bike [POST /] fails because send datas is incomplete', async () => {
-    const { statusCode } = await createBike(app, incompleteBike);
+    const { bikeOwner } = await runSeeder(CreateBikeOwnerTest);
+
+    const { statusCode } = await createBike(app, bikeOwner.id, incompleteBike);
+
+    expect(statusCode).toEqual(HttpStatus.BAD_REQUEST);
+  });
+
+  it('Create bike [POST /] fails because bike owner does not exist', async () => {
+    const { statusCode } = await createBike(app, 0, incompleteBike);
 
     expect(statusCode).toEqual(HttpStatus.BAD_REQUEST);
   });
