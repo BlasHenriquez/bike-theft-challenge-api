@@ -9,6 +9,7 @@ import {
   ParseIntPipe,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Public } from '../../src/auth/decorators/public.decorator';
 import { BikeOwnersService } from './bike-owners.service';
 import {
   CreateBikeOwnerDto,
@@ -21,6 +22,7 @@ import { UpdateBikeOwnerDto } from './dto/update-bike-owner.dto';
 export class BikeOwnersController {
   constructor(private readonly bikeOwnersService: BikeOwnersService) {}
 
+  @Public()
   @ApiOperation({ summary: 'Create a bike owner' })
   @ApiResponse({
     status: 201,

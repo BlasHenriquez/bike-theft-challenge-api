@@ -1,7 +1,8 @@
 import * as bcrypt from 'bcrypt';
 import { DefaultEntity } from '../../utils/entities/default.entity';
-import { BeforeInsert, Column, Entity } from 'typeorm';
+import { BeforeInsert, Column, Entity, OneToMany } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
+import { Bike } from '../../../src/bikes/entities/bike.entity';
 
 @Entity('bike_owners')
 export class BikeOwner extends DefaultEntity {
@@ -27,4 +28,9 @@ export class BikeOwner extends DefaultEntity {
       this.password = await bcrypt.hash(this.password, 10);
     }
   }
+
+  @OneToMany(() => Bike, (bike) => bike.bikeOwner, {
+    cascade: true,
+  })
+  bikes: Bike[];
 }

@@ -1,7 +1,8 @@
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { BikesTypes, ColorsBikes } from '../../utils/enum/bikes.enum';
 import { DefaultEntity } from '../../utils/entities/default.entity';
+import { BikeOwner } from '../../../src/bike-owners/entities/bike-owner.entity';
 
 @Entity('bikes')
 export class Bike extends DefaultEntity {
@@ -30,4 +31,12 @@ export class Bike extends DefaultEntity {
     enum: BikesTypes,
   })
   type: BikesTypes;
+
+  @ManyToOne(() => BikeOwner, (bikeOwner) => bikeOwner.bikes, {
+    eager: true,
+    onDelete: 'CASCADE',
+    nullable: false,
+  })
+  @JoinColumn({ name: 'bike_owner_id' })
+  bikeOwner: BikeOwner;
 }

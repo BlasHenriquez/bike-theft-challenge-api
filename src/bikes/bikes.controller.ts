@@ -26,9 +26,12 @@ export class BikesController {
     status: 201,
     type: DefaultColumnsResponseBike,
   })
-  @Post()
-  create(@Body() createBikeDto: CreateBikeDto) {
-    return this.bikesService.create(createBikeDto);
+  @Post('bike-owner/:bikeOwnerId')
+  create(
+    @Body() createBikeDto: CreateBikeDto,
+    @Param('bikeOwnerId', ParseIntPipe) bikeOwnerId: number,
+  ) {
+    return this.bikesService.create({ bikeOwnerId, createBikeDto });
   }
 
   @ApiResponse({

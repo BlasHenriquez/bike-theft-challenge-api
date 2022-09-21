@@ -12,5 +12,7 @@ define(Bike, (_, context: Partial<Bike>) => {
   bike.date = context?.date || faker.date.past();
   bike.type = context?.type || BikesTypes.FOLDING_BIKES;
 
+  bike.bikeOwner = context?.bikeOwner;
+
   return bike;
 });

@@ -4,6 +4,7 @@ import {
   ConflictException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { BikeOwnersService } from '../../src/bike-owners/bike-owners.service';
 import { Repository } from 'typeorm';
 import { CreateBikeDto } from './dto/create-bike.dto';
 import { UpdateBikeDto } from './dto/update-bike.dto';
@@ -14,20 +15,33 @@ export class BikesService {
   constructor(
     @InjectRepository(Bike)
     private readonly bikeRepository: Repository<Bike>,
+    private readonly bikeOwnersService: BikeOwnersService,
   ) {}
-  async create(createBikeDto: CreateBikeDto) {
-    const bikeOwner = await this.bikeRepository.findOne({
+  async create({
+    bikeOwnerId,
+    createBikeDto,
+  }: {
+    bikeOwnerId: number;
+    createBikeDto: CreateBikeDto;
+  }) {
+    const bike = await this.bikeRepository.findOne({
       license: createBikeDto.license,
     });
+    const findBikeOwner = await this.bikeOwnersService.findOne({
+      bikeOwnerId,
+    });
 
-    if (bikeOwner) {
+    if (bike) {
       throw new ConflictException(
         `This license ${createBikeDto.license} already exist`,
       );
     }
-    const bike = this.bikeRepository.create(createBikeDto);
+    const bikeCreated = this.bikeRepository.create({
+      ...createBikeDto,
+      bikeOwner: { id: findBikeOwner.id },
+    });
 
-    return this.bikeRepository.save(bike);
+    return this.bikeRepository.save(bikeCreated);
   }
 
   async findAll() {
