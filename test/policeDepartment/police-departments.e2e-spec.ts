@@ -10,7 +10,7 @@ import {
 } from './api';
 import { Connection } from 'typeorm';
 import { policeDepartment, fakePoliceDepartment } from './mock';
-import CreatePoliceDepartment from '../../db/seeds/test/createPoliceDepartment';
+import CreatePoliceDepartmentTest from '../../db/seeds/test/createPoliceDepartment';
 import CreateFivePoliceDepartmentsTest from '../../db/seeds/test/createFivePoliceDepartments';
 
 describe('[Feature] policeDepartment - /police-departments', () => {
@@ -43,7 +43,7 @@ describe('[Feature] policeDepartment - /police-departments', () => {
   });
 
   it('Create police department [POST /] fails because repeat name', async () => {
-    const { policeDepartment } = await runSeeder(CreatePoliceDepartment);
+    const { policeDepartment } = await runSeeder(CreatePoliceDepartmentTest);
 
     delete policeDepartment.id;
     delete policeDepartment.createdAt;
@@ -90,7 +90,7 @@ describe('[Feature] policeDepartment - /police-departments', () => {
   });
 
   it('Get one police department [GET /police-departments/:policeDepartmentId]', async () => {
-    const { policeDepartment } = await runSeeder(CreatePoliceDepartment);
+    const { policeDepartment } = await runSeeder(CreatePoliceDepartmentTest);
 
     const { statusCode, body } = await getPoliceDepartment(
       app,
@@ -102,7 +102,7 @@ describe('[Feature] policeDepartment - /police-departments', () => {
   });
 
   it('Get one police department [GET /police-departments/:policeDepartmentId] fails because id does not exist', async () => {
-    await runSeeder(CreatePoliceDepartment);
+    await runSeeder(CreatePoliceDepartmentTest);
 
     const { statusCode } = await getPoliceDepartment(app, 0);
 
@@ -110,7 +110,7 @@ describe('[Feature] policeDepartment - /police-departments', () => {
   });
 
   it('Get one police department [GET /police-departments/:policeDepartmentId] fails because params is not a number', async () => {
-    await runSeeder(CreatePoliceDepartment);
+    await runSeeder(CreatePoliceDepartmentTest);
 
     const { statusCode } = await getPoliceDepartment(app, 'fake-id');
 
@@ -118,7 +118,7 @@ describe('[Feature] policeDepartment - /police-departments', () => {
   });
 
   it('Update one police department [PUT /:policeDepartmentId]', async () => {
-    const { policeDepartment } = await runSeeder(CreatePoliceDepartment);
+    const { policeDepartment } = await runSeeder(CreatePoliceDepartmentTest);
 
     const { statusCode, body: bodyUpdate } = await updatPoliceDepartment(
       app,
@@ -133,7 +133,7 @@ describe('[Feature] policeDepartment - /police-departments', () => {
   });
 
   it('Update one police department [PUT /:policeDepartmentId] fails because id does not exist', async () => {
-    await runSeeder(CreatePoliceDepartment);
+    await runSeeder(CreatePoliceDepartmentTest);
 
     const { statusCode } = await updatPoliceDepartment(app, 0, {
       name: 'fake-name',
@@ -143,7 +143,7 @@ describe('[Feature] policeDepartment - /police-departments', () => {
   });
 
   it('Update one police deparment [PUT /:policeDepartmentId] fails because column is fake', async () => {
-    const { policeDepartment } = await runSeeder(CreatePoliceDepartment);
+    const { policeDepartment } = await runSeeder(CreatePoliceDepartmentTest);
 
     const { statusCode } = await updatPoliceDepartment(
       app,
@@ -157,7 +157,7 @@ describe('[Feature] policeDepartment - /police-departments', () => {
   });
 
   it('Update one police department [PUT /:policeDepartmentId] fails because params is not a number', async () => {
-    await runSeeder(CreatePoliceDepartment);
+    await runSeeder(CreatePoliceDepartmentTest);
 
     const { statusCode } = await updatPoliceDepartment(app, 'fake', {
       name: 'fake-name',
@@ -167,7 +167,7 @@ describe('[Feature] policeDepartment - /police-departments', () => {
   });
 
   it('Delete one police department [DELETE /:policeDepartmentId]', async () => {
-    const { policeDepartment } = await runSeeder(CreatePoliceDepartment);
+    const { policeDepartment } = await runSeeder(CreatePoliceDepartmentTest);
 
     const { statusCode, body: bodyDelete } = await deletPoliceDepartment(
       app,
@@ -179,7 +179,7 @@ describe('[Feature] policeDepartment - /police-departments', () => {
   });
 
   it('Delete one police department [DELETE /:policeDepartmentId] fails because id does not exist', async () => {
-    await runSeeder(CreatePoliceDepartment);
+    await runSeeder(CreatePoliceDepartmentTest);
 
     const { statusCode } = await deletPoliceDepartment(app, 0);
 
@@ -187,7 +187,7 @@ describe('[Feature] policeDepartment - /police-departments', () => {
   });
 
   it('Delete one police department [DELETE /:policeDepartmentId] fails because param is not a number', async () => {
-    await runSeeder(CreatePoliceDepartment);
+    await runSeeder(CreatePoliceDepartmentTest);
 
     const { statusCode } = await deletPoliceDepartment(app, 'fake-id');
 

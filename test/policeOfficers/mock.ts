@@ -11,6 +11,15 @@ export const policeOfficer = {
   status: StatusPolice.FREE,
 };
 
+export const policeOfficerDirector = {
+  email: faker.internet.email(),
+  password: 'Prueba123>',
+  firstName: faker.name.firstName(),
+  lastName: faker.name.lastName(),
+  role: Role.DIRECTOR,
+  status: StatusPolice.FREE,
+};
+
 export const policeOfficerWeakPassword = {
   email: faker.internet.email(),
   password: 'Prueba',

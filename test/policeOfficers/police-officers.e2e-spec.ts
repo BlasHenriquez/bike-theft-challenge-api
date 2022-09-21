@@ -14,9 +14,12 @@ import {
   policeOfficerWeakPassword,
   fakePoliceOfficer,
   incompletePoliceOfficer,
+  policeOfficerDirector,
 } from './mock';
 import CreatePoliceOfficerTest from '../../db/seeds/test/createPoliceOfficer';
 import CreateFivePoliceOfficersTest from '../../db/seeds/test/createFivePoliceOfficers';
+import CreateFivePoliceDepartmentsTest from '../../db/seeds/test/createFivePoliceDepartments';
+import CreatePoliceDepartmentTest from '../../db/seeds/test/createPoliceDepartment';
 
 describe('[Feature] policeOfficer - /police-officers', () => {
   let app: INestApplication;
@@ -38,7 +41,17 @@ describe('[Feature] policeOfficer - /police-officers', () => {
   });
 
   it('Create police officer [POST /]', async () => {
-    const { statusCode, body } = await createPoliceOfficer(app, policeOfficer);
+    const { policeDepartments } = await runSeeder(
+      CreateFivePoliceDepartmentsTest,
+    );
+    const policeOfficerWithDepartments = {
+      ...policeOfficer,
+      policeDepartment: policeDepartments,
+    };
+    const { statusCode, body } = await createPoliceOfficer(
+      app,
+      policeOfficerWithDepartments,
+    );
 
     expect(statusCode).toEqual(HttpStatus.CREATED);
     expect(body.email).toBe(policeOfficer.email);
@@ -46,6 +59,54 @@ describe('[Feature] policeOfficer - /police-officers', () => {
     expect(body.lastName).toBe(policeOfficer.lastName);
     expect(body.role).toBe(policeOfficer.role);
     expect(body.status).toBe(policeOfficer.status);
+  });
+
+  it('Create police officer director[POST /]', async () => {
+    const { policeDepartment } = await runSeeder(CreatePoliceDepartmentTest);
+    const policeOfficerWithDepartments = {
+      ...policeOfficerDirector,
+      policeDepartment: [policeDepartment],
+    };
+    const { statusCode, body } = await createPoliceOfficer(
+      app,
+      policeOfficerWithDepartments,
+    );
+
+    expect(statusCode).toEqual(HttpStatus.CREATED);
+    expect(body.email).toBe(policeOfficerDirector.email);
+    expect(body.firstName).toBe(policeOfficerDirector.firstName);
+    expect(body.lastName).toBe(policeOfficerDirector.lastName);
+    expect(body.role).toBe(policeOfficerDirector.role);
+    expect(body.status).toBe(policeOfficerDirector.status);
+  });
+
+  it('Create police officer director[POST /] have more than one department', async () => {
+    const { policeDepartments } = await runSeeder(
+      CreateFivePoliceDepartmentsTest,
+    );
+    const policeOfficerWithDepartments = {
+      ...policeOfficerDirector,
+      policeDepartment: policeDepartments,
+    };
+    const { statusCode } = await createPoliceOfficer(
+      app,
+      policeOfficerWithDepartments,
+    );
+
+    expect(statusCode).toEqual(HttpStatus.CONFLICT);
+  });
+
+  it('Create police officer [POST /] fails beacuse police doesnt have a department', async () => {
+    const policeOfficerWithEmptyDepartments = {
+      ...policeOfficer,
+      policeDepartment: [],
+    };
+    const { statusCode } = await createPoliceOfficer(
+      app,
+      policeOfficerWithEmptyDepartments,
+    );
+
+    expect(statusCode).toEqual(HttpStatus.PRECONDITION_FAILED);
   });
 
   it('Create police officer [POST /] fails because repeat email', async () => {
@@ -151,6 +212,7 @@ describe('[Feature] policeOfficer - /police-officers', () => {
       policeOfficer.id,
       {
         firstName: 'test update',
+        policeDepartment: policeOfficer.policeDepartment,
       },
     );
 
@@ -167,6 +229,7 @@ describe('[Feature] policeOfficer - /police-officers', () => {
       {
         firstName: 'test update',
         lastName: 'test',
+        policeDepartment: policeOfficer.policeDepartment,
       },
     );
 
@@ -176,11 +239,12 @@ describe('[Feature] policeOfficer - /police-officers', () => {
   });
 
   it('Update one police offer [PUT /:policeOfficerId] fails because id does not exist', async () => {
-    await runSeeder(CreatePoliceOfficerTest);
+    const { policeOfficer } = await runSeeder(CreatePoliceOfficerTest);
 
     const { statusCode } = await updatPoliceOfficer(app, 0, {
       firstName: 'test update',
       lastName: 'tes',
+      policeDepartment: policeOfficer.policeDepartment,
     });
 
     expect(statusCode).toEqual(HttpStatus.NOT_FOUND);
@@ -191,16 +255,18 @@ describe('[Feature] policeOfficer - /police-officers', () => {
 
     const { statusCode } = await updatPoliceOfficer(app, policeOfficer.id, {
       fake: 'fake-column',
+      policeDepartment: policeOfficer.policeDepartment,
     });
 
     expect(statusCode).toEqual(HttpStatus.BAD_REQUEST);
   });
 
   it('Update one police office [PUT /:policeOfficerId] fails because params is not a number', async () => {
-    await runSeeder(CreatePoliceOfficerTest);
+    const { policeOfficer } = await runSeeder(CreatePoliceOfficerTest);
 
     const { statusCode } = await updatPoliceOfficer(app, 'fake', {
       fake: 'fake-id',
+      policeDepartment: policeOfficer.policeDepartment,
     });
 
     expect(statusCode).toEqual(HttpStatus.BAD_REQUEST);
