@@ -32,6 +32,7 @@ export class Bike extends DefaultEntity {
   })
   type: BikesTypes;
 
+  @ApiProperty({ type: 'number' })
   @ManyToOne(() => BikeOwner, (bikeOwner) => bikeOwner.bikes, {
     eager: true,
     onDelete: 'CASCADE',

@@ -29,6 +29,7 @@ export class BikeOwner extends DefaultEntity {
     }
   }
 
+  @ApiProperty({ type: 'number' })
   @OneToMany(() => Bike, (bike) => bike.bikeOwner, {
     cascade: true,
   })
