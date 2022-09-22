@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { BikeOwnersService } from 'src/bike-owners/bike-owners.service';
+import { BikeOwnersService } from './../bike-owners/bike-owners.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { PayloadTokenBikeOwner } from './models/token-bike-owner.model';

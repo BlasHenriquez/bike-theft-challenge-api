@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AuthPoliceOfficerService } from './auth-police-officer.service';
 import { AuthPoliceOfficerController } from './auth-police-officer.controller';
-import config from 'src/config';
+import config from './../config';
 import { ConfigType } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';
 import { PoliceOfficersModule } from './../police-officers/police-officers.module';
