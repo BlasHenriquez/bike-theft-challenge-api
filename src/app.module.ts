@@ -6,8 +6,9 @@ import { enviroments } from './enviroments';
 import { BikesModule } from './bikes/bikes.module';
 import { BikeOwnersModule } from './bike-owners/bike-owners.module';
 import { PoliceOfficersModule } from './police-officers/police-officers.module';
-import { AuthModule } from './auth/auth.module';
 import { PoliceDepartmentsModule } from './police-departments/police-departments.module';
+import { AuthBikeOwnerModule } from './auth-bike-owner/auth-bike-owner.module';
+import { AuthPoliceOfficerModule } from './auth-police-officer/auth-police-officer.module';
 import * as Joi from 'joi';
 
 @Module({
@@ -42,8 +43,9 @@ import * as Joi from 'joi';
     BikesModule,
     BikeOwnersModule,
     PoliceOfficersModule,
-    AuthModule,
     PoliceDepartmentsModule,
+    AuthBikeOwnerModule,
+    AuthPoliceOfficerModule,
   ],
   controllers: [],
   providers: [],
