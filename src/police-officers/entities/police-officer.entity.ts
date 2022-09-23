@@ -1,10 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { BeforeInsert, Column, Entity, ManyToMany } from 'typeorm';
+import { BeforeInsert, Column, Entity, ManyToMany, OneToMany } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { StatusPolice } from './../../utils/enum/police-officer.enum';
 import { Role } from './../../utils/enum/role.enum';
 import { DefaultEntity } from './../../utils/entities/default.entity';
 import { PoliceDepartment } from './../../police-departments/entities/police-department.entity';
+import { BikeReport } from './../../bike-reports/entities/bike-report.entity';
 
 @Entity('police_officers')
 export class PoliceOfficer extends DefaultEntity {
@@ -46,6 +47,10 @@ export class PoliceOfficer extends DefaultEntity {
     (policeDepartment) => policeDepartment.policeOfficer,
   )
   policeDepartment: PoliceDepartment[];
+
+  @ApiProperty({ type: 'number' })
+  @OneToMany(() => BikeReport, (bikeReport) => bikeReport.policeOfficers)
+  bikeReport: BikeReport;
 
   @BeforeInsert()
   async hashPassword() {

@@ -1,8 +1,9 @@
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { BikesTypes, ColorsBikes } from '../../utils/enum/bikes.enum';
 import { DefaultEntity } from '../../utils/entities/default.entity';
-import { BikeOwner } from '../../../src/bike-owners/entities/bike-owner.entity';
+import { BikeOwner } from './../../bike-owners/entities/bike-owner.entity';
+import { BikeReport } from './../../bike-reports/entities/bike-report.entity';
 
 @Entity('bikes')
 export class Bike extends DefaultEntity {
@@ -40,4 +41,7 @@ export class Bike extends DefaultEntity {
   })
   @JoinColumn({ name: 'bike_owner_id' })
   bikeOwner: BikeOwner;
+
+  @OneToOne(() => BikeReport, (bikeReport) => bikeReport.bike)
+  bikeReport: BikeReport;
 }
