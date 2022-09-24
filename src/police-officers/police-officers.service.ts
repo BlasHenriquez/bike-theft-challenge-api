@@ -12,6 +12,7 @@ import { CreatePoliceOfficerDto } from './dto/create-police-officer.dto';
 import { UpdatePoliceOfficerDto } from './dto/update-police-officer.dto';
 import { PoliceOfficer } from './entities/police-officer.entity';
 import { Common } from '../../src/utils/common/common';
+import { StatusPolice } from './../utils/enum/police-officer.enum';
 
 @Injectable()
 export class PoliceOfficersService {
@@ -81,6 +82,16 @@ export class PoliceOfficersService {
         `Police officer ${policeOfficerId} was not found`,
       );
     }
+
+    return policeOfficer;
+  }
+
+  async findOneFree() {
+    const status = StatusPolice.FREE;
+    const policeOfficer = await this.policeOfficerRepository
+      .createQueryBuilder('police')
+      .where(`police.status = :status`, { status })
+      .getOne();
 
     return policeOfficer;
   }
