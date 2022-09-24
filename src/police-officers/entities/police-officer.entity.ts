@@ -45,6 +45,9 @@ export class PoliceOfficer extends DefaultEntity {
   @ManyToMany(
     () => PoliceDepartment,
     (policeDepartment) => policeDepartment.policeOfficer,
+    {
+      eager: true,
+    },
   )
   policeDepartment: PoliceDepartment[];
 
