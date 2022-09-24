@@ -21,7 +21,6 @@ import { JwtAuthPoliceGuard } from './../auth-police-officer/guards/jwt-auth-pol
 import { RolesGuard } from './../auth-police-officer/guards/roles.guard';
 import { Role } from './../utils/enum/role.enum';
 
-@Roles(Role.DIRECTOR)
 @UseGuards(JwtAuthPoliceGuard, RolesGuard)
 @ApiTags('Police departments')
 @Controller('police-departments')
