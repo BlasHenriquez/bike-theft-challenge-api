@@ -114,6 +114,60 @@ export class BikeReportsService {
     return bikeReport;
   }
 
+  private async findOnePendingBikeReport() {
+    return await this.bikeReportRepository
+      .createQueryBuilder('bikeReports')
+      .leftJoinAndSelect('bikeReports.policeOfficers', 'policeOfficers')
+      .leftJoinAndSelect('bikeReports.bike', 'bike')
+      .where('bikeReports.status = :status', { status: StatusReport.PENDING })
+      .getOne();
+  }
+
+  private async automaticallyAsigns(
+    pendingReport: BikeReport,
+    policeOfficer: PoliceOfficer,
+  ) {
+    const queryRunner = this.connection.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      const bikeReport = await this.bikeReportRepository.preload({
+        id: pendingReport.id,
+        status: StatusReport.INVESTIGATING,
+        policeOfficers: policeOfficer,
+      });
+
+      if (!pendingReport) {
+        throw new ConflictException(
+          `Bike report with id ${bikeReport.id} does not exist`,
+        );
+      }
+
+      if (!policeOfficer) {
+        throw new ConflictException(`There not police available right now`);
+      }
+
+      const resolvedReport = await queryRunner.manager.save(bikeReport);
+
+      await queryRunner.manager.update(
+        PoliceOfficer,
+        { id: bikeReport.policeOfficers.id },
+        { status: StatusPolice.BUSY },
+      );
+
+      await queryRunner.commitTransaction();
+      return resolvedReport;
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw new InternalServerErrorException(
+        'Could not create mark resolved' + error.message,
+      );
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
   async update({
     bikeReportId,
     updateBikeReportDto,
@@ -175,6 +229,12 @@ export class BikeReportsService {
         );
       }
       const resolvedReport = await this.bikeReportRepository.save(bikeReport);
+      const pendingReport = await this.findOnePendingBikeReport();
+      const policeOfficer = await this.policeOfficersService.findOneFree();
+
+      if (pendingReport && policeOfficer) {
+        this.automaticallyAsigns(pendingReport, policeOfficer);
+      }
       await queryRunner.commitTransaction();
       return resolvedReport;
     } catch (error) {
