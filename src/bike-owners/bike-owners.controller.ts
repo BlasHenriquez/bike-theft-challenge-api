@@ -7,8 +7,14 @@ import {
   Param,
   Delete,
   ParseIntPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { JwtAuthBikeOwnerGuard } from './../auth-bike-owner/guards/jwt-auth-bike-owner.guards';
+import { Roles } from './../auth-police-officer/decorators/roles.decorator';
+import { JwtAuthPoliceGuard } from './../auth-police-officer/guards/jwt-auth-police.guards';
+import { RolesGuard } from './../auth-police-officer/guards/roles.guard';
+import { Role } from './../utils/enum/role.enum';
 import { BikeOwnersService } from './bike-owners.service';
 import {
   CreateBikeOwnerDto,
@@ -36,11 +42,14 @@ export class BikeOwnersController {
     isArray: true,
     type: DefaultColumnsResponseBikeOwner,
   })
+  @Roles(Role.DIRECTOR)
+  @UseGuards(JwtAuthPoliceGuard, RolesGuard)
   @Get()
   findAll() {
     return this.bikeOwnersService.findAll();
   }
 
+  @UseGuards(JwtAuthBikeOwnerGuard)
   @ApiResponse({
     status: 200,
     type: DefaultColumnsResponseBikeOwner,
@@ -50,6 +59,7 @@ export class BikeOwnersController {
     return this.bikeOwnersService.findOne({ bikeOwnerId });
   }
 
+  @UseGuards(JwtAuthBikeOwnerGuard)
   @ApiResponse({
     status: 200,
     type: DefaultColumnsResponseBikeOwner,
@@ -62,6 +72,7 @@ export class BikeOwnersController {
     return this.bikeOwnersService.update({ bikeOwnerId, updateBikeOwnerDto });
   }
 
+  @UseGuards(JwtAuthBikeOwnerGuard)
   @ApiResponse({
     status: 200,
     type: DefaultColumnsResponseBikeOwner,
