@@ -10,6 +10,7 @@ import { PoliceDepartmentsModule } from './police-departments/police-departments
 import { AuthBikeOwnerModule } from './auth-bike-owner/auth-bike-owner.module';
 import { AuthPoliceOfficerModule } from './auth-police-officer/auth-police-officer.module';
 import { BikeReportsModule } from './bike-reports/bike-reports.module';
+import { MailModule } from './mail/mail.module';
 import * as Joi from 'joi';
 
 @Module({
@@ -48,6 +49,7 @@ import * as Joi from 'joi';
     AuthBikeOwnerModule,
     AuthPoliceOfficerModule,
     BikeReportsModule,
+    MailModule,
   ],
   controllers: [],
   providers: [],
