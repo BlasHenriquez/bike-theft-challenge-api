@@ -16,6 +16,8 @@ import { CreateBikeReportDto } from './dto/create-bike-report.dto';
 import { UpdateBikeReportDto } from './dto/update-bike-report.dto';
 import { BikeReport } from './entities/bike-report.entity';
 import { Role } from './../utils/enum/role.enum';
+import { MailService } from './../mail/mail.service';
+import { BikeOwner } from './../bike-owners/entities/bike-owner.entity';
 
 @Injectable()
 export class BikeReportsService {
@@ -25,6 +27,7 @@ export class BikeReportsService {
     private readonly bikesService: BikesService,
     private readonly bikeOwnersService: BikeOwnersService,
     private readonly policeOfficersService: PoliceOfficersService,
+    private readonly mailService: MailService,
     private readonly connection: Connection,
   ) {}
 
@@ -44,7 +47,7 @@ export class BikeReportsService {
     try {
       const report = this.bikeReportRepository.create(createBikeReportDto);
       const bike = await this.bikesService.findOne({ bikeId });
-      await this.bikeOwnersService.findOne({ bikeOwnerId });
+      const bikeOwner = await this.bikeOwnersService.findOne({ bikeOwnerId });
       const policeOfficer = await this.policeOfficersService.findOneFree();
 
       if (bike.bikeOwner.id !== bikeOwnerId) {
@@ -61,6 +64,7 @@ export class BikeReportsService {
           { id: policeOfficer.id },
           { status: StatusPolice.BUSY },
         );
+
         const reportComplete = {
           ...report,
           status: StatusReport.INVESTIGATING,
@@ -68,9 +72,14 @@ export class BikeReportsService {
           policeOfficers: policeOfficer,
         };
 
-        const test = await queryRunner.manager.save(BikeReport, reportComplete);
+        const bikeReport = await queryRunner.manager.save(
+          BikeReport,
+          reportComplete,
+        );
+        this.senEmailStatus(bikeOwner, bikeReport.status);
         await queryRunner.commitTransaction();
-        return test;
+
+        return bikeReport;
       }
 
       const reportWithoutPolice = {
@@ -83,7 +92,7 @@ export class BikeReportsService {
         BikeReport,
         reportWithoutPolice,
       );
-
+      this.senEmailStatus(bikeOwner, createdReport.status);
       await queryRunner.commitTransaction();
       return createdReport;
     } catch (error) {
@@ -173,8 +182,8 @@ export class BikeReportsService {
         throw new ConflictException(`There not police available right now`);
       }
 
-      const resolvedReport = await queryRunner.manager.save(bikeReport);
-
+      const newAsignReport = await queryRunner.manager.save(bikeReport);
+      this.senEmailStatus(newAsignReport.bike.bikeOwner, newAsignReport.status);
       await queryRunner.manager.update(
         PoliceOfficer,
         { id: bikeReport.policeOfficers.id },
@@ -182,7 +191,7 @@ export class BikeReportsService {
       );
 
       await queryRunner.commitTransaction();
-      return resolvedReport;
+      return newAsignReport;
     } catch (error) {
       await queryRunner.rollbackTransaction();
       throw new InternalServerErrorException(
@@ -260,6 +269,9 @@ export class BikeReportsService {
       if (pendingReport && policeOfficer) {
         this.automaticallyAsigns(pendingReport, policeOfficer);
       }
+
+      this.senEmailStatus(resolvedReport.bike.bikeOwner, resolvedReport.status);
+
       await queryRunner.commitTransaction();
       return resolvedReport;
     } catch (error) {
@@ -276,5 +288,16 @@ export class BikeReportsService {
     const bikeReport = await this.findOne({ bikeReportId });
 
     return this.bikeReportRepository.remove(bikeReport);
+  }
+
+  private async senEmailStatus(bikeOwner: BikeOwner, status: StatusReport) {
+    await this.mailService.sendChangeStatus({
+      to: bikeOwner.email,
+      subject: 'Bike report have been created',
+      from: 'blasdelcristo_95@hotmail.com',
+      text: `Hello World from NestJS Sendgrid`,
+      html: `<h1>Hello ${bikeOwner.firstName},</h1> 
+      <p>you have changes in your report sucessfully with the next status: ${status}</p>`,
+    });
   }
 }

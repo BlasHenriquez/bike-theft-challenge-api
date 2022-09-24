@@ -6,6 +6,7 @@ import { BikeReport } from './entities/bike-report.entity';
 import { BikesModule } from './../bikes/bikes.module';
 import { BikeOwnersModule } from './../bike-owners/bike-owners.module';
 import { PoliceOfficersModule } from './../police-officers/police-officers.module';
+import { MailModule } from './../mail/mail.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { PoliceOfficersModule } from './../police-officers/police-officers.modul
     BikesModule,
     BikeOwnersModule,
     PoliceOfficersModule,
+    MailModule,
   ],
   controllers: [BikeReportsController],
   providers: [BikeReportsService],
