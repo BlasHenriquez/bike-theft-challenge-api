@@ -28,6 +28,7 @@ export class BikeReport extends DefaultEntity {
 
   @ApiProperty({ type: 'number' })
   @OneToOne(() => Bike, (bike) => bike.bikeReport, {
+    eager: true,
     cascade: true,
   })
   @JoinColumn({ name: 'bike_id' })
@@ -38,6 +39,7 @@ export class BikeReport extends DefaultEntity {
     () => PoliceOfficer,
     (policeOfficers) => policeOfficers.bikeReport,
     {
+      eager: true,
       nullable: true,
     },
   )
