@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   ParseIntPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { PoliceDepartmentsService } from './police-departments.service';
 import {
@@ -15,7 +16,13 @@ import {
 } from './dto/create-police-department.dto';
 import { UpdatePoliceDepartmentDto } from './dto/update-police-department.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Roles } from './../auth-police-officer/decorators/roles.decorator';
+import { JwtAuthPoliceGuard } from './../auth-police-officer/guards/jwt-auth-police.guards';
+import { RolesGuard } from './../auth-police-officer/guards/roles.guard';
+import { Role } from './../utils/enum/role.enum';
 
+@Roles(Role.DIRECTOR)
+@UseGuards(JwtAuthPoliceGuard, RolesGuard)
 @ApiTags('Police departments')
 @Controller('police-departments')
 export class PoliceDepartmentsController {
@@ -23,6 +30,7 @@ export class PoliceDepartmentsController {
     private readonly policeDepartmentsService: PoliceDepartmentsService,
   ) {}
 
+  @Roles(Role.DIRECTOR)
   @ApiOperation({ summary: 'Create a police departments' })
   @ApiResponse({
     status: 201,
@@ -33,6 +41,7 @@ export class PoliceDepartmentsController {
     return this.policeDepartmentsService.create(createPoliceDepartmentDto);
   }
 
+  @Roles(Role.DIRECTOR)
   @ApiResponse({
     status: 200,
     isArray: true,
@@ -43,6 +52,7 @@ export class PoliceDepartmentsController {
     return this.policeDepartmentsService.findAll();
   }
 
+  @Roles(Role.DIRECTOR)
   @ApiResponse({
     status: 200,
     type: DefaultColumnsResponseDepartment,
@@ -52,10 +62,12 @@ export class PoliceDepartmentsController {
     return this.policeDepartmentsService.findOne({ departmentId });
   }
 
+  @Roles(Role.DIRECTOR)
   @ApiResponse({
     status: 200,
     type: DefaultColumnsResponseDepartment,
   })
+  @Roles(Role.DIRECTOR)
   @Put(':departmentId')
   update(
     @Param('departmentId', ParseIntPipe) departmentId: number,
@@ -67,6 +79,7 @@ export class PoliceDepartmentsController {
     });
   }
 
+  @Roles(Role.DIRECTOR)
   @ApiResponse({
     status: 200,
     type: DefaultColumnsResponseDepartment,
