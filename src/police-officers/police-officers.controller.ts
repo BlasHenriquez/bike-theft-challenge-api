@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   ParseIntPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { PoliceOfficersService } from './police-officers.service';
 import {
@@ -15,12 +16,18 @@ import {
 } from './dto/create-police-officer.dto';
 import { UpdatePoliceOfficerDto } from './dto/update-police-officer.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Roles } from './../auth-police-officer/decorators/roles.decorator';
+import { Role } from './../utils/enum/role.enum';
+import { JwtAuthPoliceGuard } from './../auth-police-officer/guards/jwt-auth-police.guards';
+import { RolesGuard } from './../auth-police-officer/guards/roles.guard';
 
+@UseGuards(JwtAuthPoliceGuard, RolesGuard)
 @ApiTags('Police officers')
 @Controller('police-officers')
 export class PoliceOfficersController {
   constructor(private readonly policeOfficersService: PoliceOfficersService) {}
 
+  @Roles(Role.DIRECTOR)
   @ApiOperation({ summary: 'Create a police officer' })
   @ApiResponse({
     status: 201,
@@ -31,6 +38,7 @@ export class PoliceOfficersController {
     return this.policeOfficersService.create(createPoliceOfficerDto);
   }
 
+  @Roles(Role.DIRECTOR)
   @ApiResponse({
     status: 200,
     isArray: true,
@@ -41,6 +49,7 @@ export class PoliceOfficersController {
     return this.policeOfficersService.findAll();
   }
 
+  @Roles(Role.DIRECTOR)
   @ApiResponse({
     status: 200,
     type: DefaultColumnsResponsePoliceOfficer,
@@ -50,6 +59,7 @@ export class PoliceOfficersController {
     return this.policeOfficersService.findOne({ policeOfficerId });
   }
 
+  @Roles(Role.DIRECTOR)
   @ApiResponse({
     status: 200,
     type: DefaultColumnsResponsePoliceOfficer,
@@ -65,6 +75,7 @@ export class PoliceOfficersController {
     });
   }
 
+  @Roles(Role.DIRECTOR)
   @ApiResponse({
     status: 200,
     type: DefaultColumnsResponsePoliceOfficer,
