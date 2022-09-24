@@ -16,3 +16,14 @@ export class CreateBikeReportDto {
   @IsString()
   descriptionTheft: string;
 }
+
+export class DefaultColumnsResponseBikeReport extends CreateBikeReportDto {
+  @ApiProperty()
+  readonly id: number;
+
+  @ApiProperty()
+  readonly createdAt: Date;
+
+  @ApiProperty()
+  readonly updatedAt: Date;
+}

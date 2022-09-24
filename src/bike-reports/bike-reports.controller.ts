@@ -10,12 +10,15 @@ import {
   UseGuards,
   ParseIntPipe,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { PayloadTokenBikeOwner } from './../auth-bike-owner/models/token-bike-owner.model';
 import { JwtAuthPoliceGuard } from './../auth-police-officer/guards/jwt-auth-police.guards';
 import { JwtAuthBikeOwnerGuard } from './../auth-bike-owner/guards/jwt-auth-bike-owner.guards';
 import { BikeReportsService } from './bike-reports.service';
-import { CreateBikeReportDto } from './dto/create-bike-report.dto';
+import {
+  CreateBikeReportDto,
+  DefaultColumnsResponseBikeReport,
+} from './dto/create-bike-report.dto';
 import { UpdateBikeReportDto } from './dto/update-bike-report.dto';
 import { Roles } from './../auth-police-officer/decorators/roles.decorator';
 import { Role } from './../utils/enum/role.enum';
@@ -26,6 +29,11 @@ import { RolesGuard } from './../auth-police-officer/guards/roles.guard';
 export class BikeReportsController {
   constructor(private readonly bikeReportsService: BikeReportsService) {}
 
+  @ApiOperation({ summary: 'Create a bike report' })
+  @ApiResponse({
+    status: 201,
+    type: DefaultColumnsResponseBikeReport,
+  })
   @UseGuards(JwtAuthBikeOwnerGuard)
   @Post('bike/:bikeId')
   create(
@@ -40,6 +48,11 @@ export class BikeReportsController {
     });
   }
 
+  @ApiResponse({
+    status: 200,
+    isArray: true,
+    type: DefaultColumnsResponseBikeReport,
+  })
   @Roles(Role.DIRECTOR)
   @UseGuards(JwtAuthPoliceGuard, RolesGuard)
   @Get()
@@ -47,12 +60,20 @@ export class BikeReportsController {
     return this.bikeReportsService.findAll();
   }
 
+  @ApiResponse({
+    status: 200,
+    type: DefaultColumnsResponseBikeReport,
+  })
   @UseGuards(JwtAuthPoliceGuard)
   @Get(':bikeReportId')
   findOne(@Param('bikeReportId', ParseIntPipe) bikeReportId: number) {
     return this.bikeReportsService.findOne({ bikeReportId });
   }
 
+  @ApiResponse({
+    status: 200,
+    type: DefaultColumnsResponseBikeReport,
+  })
   @UseGuards(JwtAuthBikeOwnerGuard)
   @Put(':bikeReportId')
   update(
@@ -67,6 +88,10 @@ export class BikeReportsController {
     });
   }
 
+  @ApiResponse({
+    status: 200,
+    type: DefaultColumnsResponseBikeReport,
+  })
   @Roles(Role.POLICE)
   @UseGuards(JwtAuthPoliceGuard, RolesGuard)
   @Put(':bikeReportId/resolved')
@@ -80,6 +105,11 @@ export class BikeReportsController {
     });
   }
 
+  @ApiResponse({
+    status: 200,
+    isArray: true,
+    type: DefaultColumnsResponseBikeReport,
+  })
   @Roles(Role.DIRECTOR)
   @UseGuards(JwtAuthPoliceGuard, RolesGuard)
   @Delete(':bikeReportId')
