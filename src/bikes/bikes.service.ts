@@ -9,7 +9,7 @@ import { Repository } from 'typeorm';
 import { CreateBikeDto } from './dto/create-bike.dto';
 import { UpdateBikeDto } from './dto/update-bike.dto';
 import { Bike } from './entities/bike.entity';
-
+import { QueryBikesDto } from './dto/query.dto';
 @Injectable()
 export class BikesService {
   constructor(
@@ -45,7 +45,15 @@ export class BikesService {
   }
 
   async findAll() {
-    return await this.bikeRepository.find();
+    return this.bikeRepository.find();
+  }
+
+  async searcher(queryParams: QueryBikesDto) {
+    const { license, description, color, type, date } = queryParams;
+
+    return this.bikeRepository.find({
+      where: [{ license }, { description }, { color }, { type }, { date }],
+    });
   }
 
   async findOne({ bikeId }: { bikeId: number }) {
