@@ -24,7 +24,7 @@ import CreateFiveBikeReportTest from '../../db/seeds/test/createFiveBikeReports'
 import CreateBikeReportInvestigatingTest from '../../db/seeds/test/createBikeReportInvestigating';
 import { StatusPolice } from '../../src/utils/enum/police-officer.enum';
 
-describe('[Feature] bikeReport - /bike-reports/bike/:bikeId', () => {
+describe('[Feature] bikeReport - /bike-reports', () => {
   let app: INestApplication;
 
   beforeAll(async () => {
@@ -43,7 +43,7 @@ describe('[Feature] bikeReport - /bike-reports/bike/:bikeId', () => {
     await app.close();
   });
 
-  it('Create bike report investigating [POST /]', async () => {
+  it('Create bike report investigating [POST /bike/:bikeId]', async () => {
     const { bike, bikeOwner } = await runSeeder(CreateBikeTest);
     const { policeOfficer } = await runSeeder(CreatePoliceOfficerTest);
     const { body: bodyToken } = await loginBikeOwner(app, {
@@ -71,7 +71,7 @@ describe('[Feature] bikeReport - /bike-reports/bike/:bikeId', () => {
     expect(bodyCreated.bike.bikeOwner.id).toBe(bikeOwner.id);
   });
 
-  it('Create bike report pending[POST /]', async () => {
+  it('Create bike report pending[POST /bike/:bikeIdbike/:bikeId]', async () => {
     const { bike, bikeOwner } = await runSeeder(CreateBikeTest);
     await runSeeder(CreatePoliceOfficerBusyTest);
 
@@ -98,7 +98,7 @@ describe('[Feature] bikeReport - /bike-reports/bike/:bikeId', () => {
     expect(bodyCreated.bike.bikeOwner.id).toBe(bikeOwner.id);
   });
 
-  it('Create bike report without police because is director[POST /]', async () => {
+  it('Create bike report without police because is director[POST /bike/:bikeId]', async () => {
     const { bike, bikeOwner } = await runSeeder(CreateBikeTest);
     await runSeeder(CreateDirectorPolice);
 
@@ -127,7 +127,7 @@ describe('[Feature] bikeReport - /bike-reports/bike/:bikeId', () => {
     expect(bodyCreated.bike.bikeOwner.id).toBe(bikeOwner.id);
   });
 
-  it('Create bike report without police because there are not in database [POST /]', async () => {
+  it('Create bike report without police because there are not in database [POST /bike/:bikeId]', async () => {
     const { bike, bikeOwner } = await runSeeder(CreateBikeTest);
 
     const { body: bodyToken } = await loginBikeOwner(app, {
@@ -155,7 +155,7 @@ describe('[Feature] bikeReport - /bike-reports/bike/:bikeId', () => {
     expect(bodyCreated.bike.bikeOwner.id).toBe(bikeOwner.id);
   });
 
-  it('Create bike report pending[POST /] fails because report has fake column', async () => {
+  it('Create bike report pending[POST /bike/:bikeId] fails because report has fake column', async () => {
     const { bike, bikeOwner } = await runSeeder(CreateBikeTest);
     await runSeeder(CreatePoliceOfficerTest);
 
@@ -174,7 +174,7 @@ describe('[Feature] bikeReport - /bike-reports/bike/:bikeId', () => {
     expect(statusCode).toEqual(HttpStatus.BAD_REQUEST);
   });
 
-  it('Create bike report pending[POST /] fails because report is incomplete', async () => {
+  it('Create bike report pending[POST /bike/:bikeId] fails because report is incomplete', async () => {
     const { bike, bikeOwner } = await runSeeder(CreateBikeTest);
     await runSeeder(CreatePoliceOfficerTest);
 
@@ -193,7 +193,7 @@ describe('[Feature] bikeReport - /bike-reports/bike/:bikeId', () => {
     expect(statusCode).toEqual(HttpStatus.BAD_REQUEST);
   });
 
-  it('Create bike report [POST /] fails because bike owner token is not owner of bike', async () => {
+  it('Create bike report [POST /bike/:bikeId] fails because bike owner token is not owner of bike', async () => {
     const { bike } = await runSeeder(CreateBikeTest);
     const { bikeOwner } = await runSeeder(CreateBikeOwnerTest);
 
@@ -213,7 +213,7 @@ describe('[Feature] bikeReport - /bike-reports/bike/:bikeId', () => {
     expect(statusCode).toEqual(HttpStatus.INTERNAL_SERVER_ERROR);
   });
 
-  it('Create bike report [POST /] fails because bike id not exist', async () => {
+  it('Create bike report [POST /bike/:bikeId] fails because bike id not exist', async () => {
     const { bikeOwner } = await runSeeder(CreateBikeTest);
     await runSeeder(CreatePoliceOfficerTest);
 
@@ -233,7 +233,7 @@ describe('[Feature] bikeReport - /bike-reports/bike/:bikeId', () => {
     expect(statusCode).toEqual(HttpStatus.INTERNAL_SERVER_ERROR);
   });
 
-  it('Create bike report [POST /] fails because bike id is string', async () => {
+  it('Create bike report [POST /bike/:bikeId] fails because bike id is string', async () => {
     const { bikeOwner } = await runSeeder(CreateBikeTest);
     await runSeeder(CreatePoliceOfficerTest);
 
@@ -253,7 +253,7 @@ describe('[Feature] bikeReport - /bike-reports/bike/:bikeId', () => {
     expect(statusCode).toEqual(HttpStatus.BAD_REQUEST);
   });
 
-  it('Get bike reports [GET /]', async () => {
+  it.only('Get bike reports [GET /]', async () => {
     const { reports } = await runSeeder(CreateFiveBikeReportTest);
     const { policeDirector } = await runSeeder(CreateDirectorPolice);
 

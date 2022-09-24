@@ -108,6 +108,7 @@ export class BikeReportsService {
   async findAll() {
     return await this.bikeReportRepository.find({
       relations: ['bike', 'policeOfficers'],
+      order: { id: 'ASC' },
     });
   }
 
