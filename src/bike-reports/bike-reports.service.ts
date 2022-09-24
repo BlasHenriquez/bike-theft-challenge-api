@@ -174,8 +174,6 @@ export class BikeReportsService {
           `Bike report with id ${bikeReportId} does not exist`,
         );
       }
-      console.log(bikeReport.policeOfficers.id, policeId);
-
       const resolvedReport = await this.bikeReportRepository.save(bikeReport);
       await queryRunner.commitTransaction();
       return resolvedReport;
