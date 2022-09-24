@@ -5,6 +5,7 @@ import {
   createBikeReport,
   deleteBikeReport,
   getBikeReport,
+  getBikeReportByOwner,
   getBikeReports,
   updatBikeReport,
   updatBikeReportToResolved,
@@ -333,6 +334,85 @@ describe('[Feature] bikeReport - /bike-reports/bike/:bikeId', () => {
     expect(bodyOne.status).toBe(StatusReport.PENDING);
     expect(bodyOne.bike.id).toBe(bike.id);
     expect(bodyOne.bike.bikeOwner.id).toBe(bikeOwner.id);
+  });
+
+  it('Get one bike report by bike owner [GET /]', async () => {
+    const { report, bike, bikeOwner } = await runSeeder(
+      CreateBikeReportInvestigatingTest,
+    );
+
+    const { body: bodyToken } = await loginBikeOwner(app, {
+      email: bikeOwner.email,
+      password: 'Prueba123>',
+    });
+    const accessToken = bodyToken.accessToken;
+
+    const { statusCode, body: bodyOne } = await getBikeReportByOwner(
+      app,
+      report.id,
+      accessToken,
+    );
+
+    expect(statusCode).toBe(HttpStatus.OK);
+    expect(new Date(bodyOne.dateTheft).getTime()).toBe(
+      new Date(report.dateTheft).getTime(),
+    );
+    expect(bodyOne.addressTheft).toBe(report.addressTheft);
+    expect(bodyOne.descriptionTheft).toBe(report.descriptionTheft);
+    expect(bodyOne.status).toBe(StatusReport.PENDING);
+    expect(bodyOne.bike.id).toBe(bike.id);
+    expect(bodyOne.bike.bikeOwner.id).toBe(bikeOwner.id);
+  });
+
+  it('Get one bike report by bike owner [GET /] fails because id is not from bikeOwner', async () => {
+    const { bikeOwner } = await runSeeder(CreateBikeOwnerTest);
+    const { report } = await runSeeder(CreateBikeReportInvestigatingTest);
+
+    const { body: bodyToken } = await loginBikeOwner(app, {
+      email: bikeOwner.email,
+      password: 'Prueba123>',
+    });
+    const accessToken = bodyToken.accessToken;
+
+    const { statusCode } = await getBikeReportByOwner(
+      app,
+      report.id,
+      accessToken,
+    );
+
+    expect(statusCode).toBe(HttpStatus.NOT_FOUND);
+  });
+
+  it('Get one bike report by bike owner [GET /] fails because id doesnt exist', async () => {
+    const { bikeOwner } = await runSeeder(CreateBikeReportInvestigatingTest);
+
+    const { body: bodyToken } = await loginBikeOwner(app, {
+      email: bikeOwner.email,
+      password: 'Prueba123>',
+    });
+    const accessToken = bodyToken.accessToken;
+
+    const { statusCode } = await getBikeReportByOwner(app, 0, accessToken);
+
+    expect(statusCode).toBe(HttpStatus.NOT_FOUND);
+  });
+
+  it('Get one bike report by bike owner [GET /] fails because id is not a number', async () => {
+    const { bikeOwner } = await runSeeder(CreateBikeReportInvestigatingTest);
+
+    const { body: bodyToken } = await loginBikeOwner(app, {
+      email: bikeOwner.email,
+      password: 'Prueba123>',
+    });
+    const accessToken = bodyToken.accessToken;
+
+    const { statusCode } = await getBikeReportByOwner(
+      app,
+      'fake-id',
+      accessToken,
+    );
+
+    expect(statusCode).toBe(HttpStatus.BAD_REQUEST);
   });
 
   it('Get one bike report [GET /] fails because token is not police officer', async () => {

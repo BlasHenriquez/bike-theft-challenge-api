@@ -26,6 +26,15 @@ export const getBikeReport = (
     .get(`/bike-reports/${bikeReportId}`)
     .set('Authorization', `Bearer ${token}`);
 
+export const getBikeReportByOwner = (
+  app: INestApplication,
+  bikeReportId: any,
+  token: string,
+) =>
+  request(app.getHttpServer())
+    .get(`/bike-reports/${bikeReportId}/owner`)
+    .set('Authorization', `Bearer ${token}`);
+
 export const updatBikeReport = (
   app: INestApplication,
   bikeReportId: any,

@@ -106,6 +106,32 @@ export class BikeReportsService {
     const bikeReport = await this.bikeReportRepository.findOne(bikeReportId, {
       relations: ['bike', 'policeOfficers'],
     });
+    console.log(bikeReport);
+
+    if (!bikeReport) {
+      throw new NotFoundException(`Bike owner ${bikeReportId} was not found`);
+    }
+
+    return bikeReport;
+  }
+
+  async findOneByBikeOwner({
+    bikeReportId,
+    bikeOwnerId,
+  }: {
+    bikeReportId: number;
+    bikeOwnerId: number;
+  }) {
+    const bikeReport = await this.bikeReportRepository.findOne(bikeReportId, {
+      relations: ['bike'],
+      where: {
+        bike: {
+          bikeOwner: {
+            id: bikeOwnerId,
+          },
+        },
+      },
+    });
 
     if (!bikeReport) {
       throw new NotFoundException(`Bike owner ${bikeReportId} was not found`);

@@ -13,7 +13,6 @@ import {
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { PayloadTokenBikeOwner } from './../auth-bike-owner/models/token-bike-owner.model';
 import { JwtAuthPoliceGuard } from './../auth-police-officer/guards/jwt-auth-police.guards';
-import { JwtAuthBikeOwnerGuard } from './../auth-bike-owner/guards/jwt-auth-bike-owner.guards';
 import { BikeReportsService } from './bike-reports.service';
 import {
   CreateBikeReportDto,
@@ -23,6 +22,7 @@ import { UpdateBikeReportDto } from './dto/update-bike-report.dto';
 import { Roles } from './../auth-police-officer/decorators/roles.decorator';
 import { Role } from './../utils/enum/role.enum';
 import { RolesGuard } from './../auth-police-officer/guards/roles.guard';
+import { JwtAuthBikeOwnerGuard } from './../auth-bike-owner/guards/jwt-auth-bike-owner.guards';
 
 @ApiTags('Bike Reports')
 @Controller('bike-reports')
@@ -58,6 +58,22 @@ export class BikeReportsController {
   @Get()
   findAll() {
     return this.bikeReportsService.findAll();
+  }
+
+  @ApiResponse({
+    status: 200,
+    type: DefaultColumnsResponseBikeReport,
+  })
+  @UseGuards(JwtAuthBikeOwnerGuard)
+  @Get(':bikeReportId/owner')
+  findOneByBikeOwner(
+    @Param('bikeReportId', ParseIntPipe) bikeReportId: number,
+    @Request() req: { user: PayloadTokenBikeOwner },
+  ) {
+    return this.bikeReportsService.findOneByBikeOwner({
+      bikeReportId,
+      bikeOwnerId: req.user.id,
+    });
   }
 
   @ApiResponse({
