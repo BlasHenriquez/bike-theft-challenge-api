@@ -253,7 +253,7 @@ describe('[Feature] bikeReport - /bike-reports', () => {
     expect(statusCode).toEqual(HttpStatus.BAD_REQUEST);
   });
 
-  it.only('Get bike reports [GET /]', async () => {
+  it('Get bike reports [GET /]', async () => {
     const { reports } = await runSeeder(CreateFiveBikeReportTest);
     const { policeDirector } = await runSeeder(CreateDirectorPolice);
 
