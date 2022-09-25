@@ -107,7 +107,7 @@ $ npm run seed:run
 This template uses swagger for documentation.
 To see swagger, if you are using port 8080 for the api, it would be for example => localhost:8080/api
 
-![imagen](https://ibb.co/WVrwqjk)
+![docs bike challenge](https://user-images.githubusercontent.com/19571059/192161718-590e92a6-f87e-4631-bb76-9306b7cec552.jpg)
 
 ## Endpoint security
 
