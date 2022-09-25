@@ -294,8 +294,8 @@ export class BikeReportsService {
   private async senEmailStatus(bikeOwner: BikeOwner, status: StatusReport) {
     await this.mailService.sendChangeStatus({
       to: bikeOwner.email,
-      subject: 'Bike report have been created',
-      from: 'blasdelcristo_95@hotmail.com',
+      subject: 'Changes in your report',
+      from: process.env.SEND_GRID_MAIL,
       text: `Hello World from NestJS Sendgrid`,
       html: `<h1>Hello ${bikeOwner.firstName},</h1> 
       <p>you have changes in your report sucessfully with the next status: ${status}</p>`,
