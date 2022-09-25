@@ -10,7 +10,12 @@ import {
   UseGuards,
   ParseIntPipe,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { PayloadTokenBikeOwner } from './../auth-bike-owner/models/token-bike-owner.model';
 import { JwtAuthPoliceGuard } from './../auth-police-officer/guards/jwt-auth-police.guards';
 import { BikeReportsService } from './bike-reports.service';
@@ -35,6 +40,7 @@ export class BikeReportsController {
     type: DefaultColumnsResponseBikeReport,
   })
   @UseGuards(JwtAuthBikeOwnerGuard)
+  @ApiBearerAuth('jwt-bike-owner')
   @Post('bike/:bikeId')
   create(
     @Body() createBikeReportDto: CreateBikeReportDto,
@@ -55,6 +61,7 @@ export class BikeReportsController {
   })
   @Roles(Role.DIRECTOR)
   @UseGuards(JwtAuthPoliceGuard, RolesGuard)
+  @ApiBearerAuth('jwt-police')
   @Get()
   findAll() {
     return this.bikeReportsService.findAll();
@@ -65,6 +72,7 @@ export class BikeReportsController {
     type: DefaultColumnsResponseBikeReport,
   })
   @UseGuards(JwtAuthBikeOwnerGuard)
+  @ApiBearerAuth('jwt-bike-owner')
   @Get(':bikeReportId/owner')
   findOneByBikeOwner(
     @Param('bikeReportId', ParseIntPipe) bikeReportId: number,
@@ -81,6 +89,7 @@ export class BikeReportsController {
     type: DefaultColumnsResponseBikeReport,
   })
   @UseGuards(JwtAuthPoliceGuard)
+  @ApiBearerAuth('jwt-police')
   @Get(':bikeReportId')
   findOne(@Param('bikeReportId', ParseIntPipe) bikeReportId: number) {
     return this.bikeReportsService.findOne({ bikeReportId });
@@ -91,6 +100,7 @@ export class BikeReportsController {
     type: DefaultColumnsResponseBikeReport,
   })
   @UseGuards(JwtAuthBikeOwnerGuard)
+  @ApiBearerAuth('jwt-bike-owner')
   @Put(':bikeReportId')
   update(
     @Param('bikeReportId', ParseIntPipe) bikeReportId: number,
@@ -110,6 +120,7 @@ export class BikeReportsController {
   })
   @Roles(Role.POLICE)
   @UseGuards(JwtAuthPoliceGuard, RolesGuard)
+  @ApiBearerAuth('jwt-police')
   @Put(':bikeReportId/resolved')
   updateStatus(
     @Param('bikeReportId', ParseIntPipe) bikeReportId: number,
@@ -128,6 +139,7 @@ export class BikeReportsController {
   })
   @Roles(Role.DIRECTOR)
   @UseGuards(JwtAuthPoliceGuard, RolesGuard)
+  @ApiBearerAuth('jwt-police')
   @Delete(':bikeReportId')
   remove(@Param('bikeReportId', ParseIntPipe) bikeReportId: number) {
     return this.bikeReportsService.remove({ bikeReportId });

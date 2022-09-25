@@ -9,7 +9,12 @@ import {
   ParseIntPipe,
   UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { JwtAuthBikeOwnerGuard } from './../auth-bike-owner/guards/jwt-auth-bike-owner.guards';
 import { Roles } from './../auth-police-officer/decorators/roles.decorator';
 import { JwtAuthPoliceGuard } from './../auth-police-officer/guards/jwt-auth-police.guards';
@@ -44,12 +49,14 @@ export class BikeOwnersController {
   })
   @Roles(Role.DIRECTOR)
   @UseGuards(JwtAuthPoliceGuard, RolesGuard)
+  @ApiBearerAuth('jwt-police')
   @Get()
   findAll() {
     return this.bikeOwnersService.findAll();
   }
 
   @UseGuards(JwtAuthBikeOwnerGuard)
+  @ApiBearerAuth('jwt-bike-owner')
   @ApiResponse({
     status: 200,
     type: DefaultColumnsResponseBikeOwner,
@@ -60,6 +67,7 @@ export class BikeOwnersController {
   }
 
   @UseGuards(JwtAuthBikeOwnerGuard)
+  @ApiBearerAuth('jwt-bike-owner')
   @ApiResponse({
     status: 200,
     type: DefaultColumnsResponseBikeOwner,
@@ -73,6 +81,7 @@ export class BikeOwnersController {
   }
 
   @UseGuards(JwtAuthBikeOwnerGuard)
+  @ApiBearerAuth('jwt-bike-owner')
   @ApiResponse({
     status: 200,
     type: DefaultColumnsResponseBikeOwner,

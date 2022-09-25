@@ -10,7 +10,12 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { JwtAuthBikeOwnerGuard } from './../auth-bike-owner/guards/jwt-auth-bike-owner.guards';
 import { JwtAuthPoliceGuard } from './../auth-police-officer/guards/jwt-auth-police.guards';
 import { BikesService } from './bikes.service';
@@ -27,6 +32,7 @@ export class BikesController {
   constructor(private readonly bikesService: BikesService) {}
 
   @UseGuards(JwtAuthBikeOwnerGuard)
+  @ApiBearerAuth('jwt-bike-owner')
   @ApiOperation({ summary: 'Create a bike' })
   @ApiResponse({
     status: 201,
@@ -41,6 +47,7 @@ export class BikesController {
   }
 
   @UseGuards(JwtAuthPoliceGuard)
+  @ApiBearerAuth('jwt-police')
   @ApiResponse({
     status: 200,
     isArray: true,
@@ -52,6 +59,7 @@ export class BikesController {
   }
 
   @UseGuards(JwtAuthPoliceGuard)
+  @ApiBearerAuth('jwt-police')
   @ApiResponse({
     status: 200,
     isArray: true,
@@ -71,6 +79,7 @@ export class BikesController {
     return this.bikesService.findOne({ bikeId });
   }
   @UseGuards(JwtAuthBikeOwnerGuard)
+  @ApiBearerAuth('jwt-bike-owner')
   @ApiResponse({
     status: 200,
     type: DefaultColumnsResponseBike,
@@ -84,6 +93,7 @@ export class BikesController {
   }
 
   @UseGuards(JwtAuthBikeOwnerGuard)
+  @ApiBearerAuth('jwt-bike-owner')
   @ApiResponse({
     status: 200,
     type: DefaultColumnsResponseBike,

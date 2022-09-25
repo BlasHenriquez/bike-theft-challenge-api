@@ -15,13 +15,19 @@ import {
   DefaultColumnsResponseDepartment,
 } from './dto/create-police-department.dto';
 import { UpdatePoliceDepartmentDto } from './dto/update-police-department.dto';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Roles } from './../auth-police-officer/decorators/roles.decorator';
 import { JwtAuthPoliceGuard } from './../auth-police-officer/guards/jwt-auth-police.guards';
 import { RolesGuard } from './../auth-police-officer/guards/roles.guard';
 import { Role } from './../utils/enum/role.enum';
 
 @UseGuards(JwtAuthPoliceGuard, RolesGuard)
+@ApiBearerAuth('jwt-police')
 @ApiTags('Police departments')
 @Controller('police-departments')
 export class PoliceDepartmentsController {

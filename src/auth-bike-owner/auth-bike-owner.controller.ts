@@ -1,5 +1,5 @@
 import { Controller, Post, UseGuards, HttpCode, Request } from '@nestjs/common';
-import { ApiBody, ApiResponse } from '@nestjs/swagger';
+import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthBikeOwnerService } from './auth-bike-owner.service';
 import {
   LoginBikeOwnerDto,
@@ -8,6 +8,7 @@ import {
 import { LocalAuthBikeOwnerGuard } from './guards/local-auth-bike-owner.guard';
 import { PayloadTokenBikeOwner } from './models/token-bike-owner.model';
 
+@ApiTags('Auth bike owner')
 @Controller('auth-bike-owner')
 export class AuthBikeOwnerController {
   constructor(private readonly authBikeOwnerService: AuthBikeOwnerService) {}
