@@ -21,6 +21,7 @@ import * as Joi from 'joi';
       isGlobal: true,
       validationSchema: Joi.object({
         JWT_SECRET: Joi.string().required(),
+        JWT_POLICE_SECRET: Joi.string().required(),
         ACCESS_TOKEN_EXPIRATION: Joi.string().required(),
       }),
       validationOptions: {
@@ -30,6 +31,12 @@ import * as Joi from 'joi';
     TypeOrmModule.forRootAsync({
       inject: [config.KEY],
       useFactory: (configService: ConfigType<typeof config>) => {
+        if (configService.env.production) {
+          return {
+            url: configService.database.url,
+            ssl: { rejectUnauthorized: false },
+          };
+        }
         return {
           type: 'postgres',
           host: configService.postgres.host,
