@@ -52,7 +52,7 @@ describe('[Feature] bikeOwners - /bike-owners', () => {
     expect(body.lastName).toBe(bikeOwner.lastName);
   });
 
-  it('Create bike [POST /] fails because repeat email', async () => {
+  it('Create bike owner [POST /] fails because repeat email', async () => {
     const { bikeOwner } = await runSeeder(CreateBikeOwnerTest);
 
     delete bikeOwner.id;
@@ -70,7 +70,7 @@ describe('[Feature] bikeOwners - /bike-owners', () => {
     expect(statusCode).toEqual(HttpStatus.CONFLICT);
   });
 
-  it('Create police officer [POST /] fails because password is weak', async () => {
+  it('Create bike owner [POST /] fails because password is weak', async () => {
     const { statusCode } = await createBikeOwner(app, bikeOwnerWeakPassword);
 
     expect(statusCode).toEqual(HttpStatus.BAD_REQUEST);
@@ -151,7 +151,7 @@ describe('[Feature] bikeOwners - /bike-owners', () => {
     expect(body.length).toBe(0);
   });
 
-  it('Get one bike owner [GET /bike-owner/:bikeOwnerId]', async () => {
+  it('Get one bike owner [GET /:bikeOwnerId]', async () => {
     const { bikeOwner } = await runSeeder(CreateBikeOwnerTest);
 
     const { body: bodyToken } = await loginBikeOwner(app, {
@@ -172,7 +172,7 @@ describe('[Feature] bikeOwners - /bike-owners', () => {
     expect(body.lastName).toBe(bikeOwner.lastName);
   });
 
-  it('Get one bike owner [GET /bike-owner/:bikeOwnerId] fails because is not bike owner', async () => {
+  it('Get one bike owner [GET /:bikeOwnerId] fails because is not bike owner', async () => {
     const { policeDirector } = await runSeeder(CreateDirectorPolice);
     const { bikeOwner } = await runSeeder(CreateBikeOwnerTest);
 
@@ -187,7 +187,7 @@ describe('[Feature] bikeOwners - /bike-owners', () => {
     expect(statusCode).toBe(HttpStatus.UNAUTHORIZED);
   });
 
-  it('Get one bike owner [GET /bike-owner/:bikeOwnerId] fails because id does not exist', async () => {
+  it('Get one bike owner [GET /:bikeOwnerId] fails because id does not exist', async () => {
     const { bikeOwner } = await runSeeder(CreateBikeOwnerTest);
 
     const { body: bodyToken } = await loginBikeOwner(app, {
@@ -202,7 +202,7 @@ describe('[Feature] bikeOwners - /bike-owners', () => {
     expect(statusCode).toBe(HttpStatus.NOT_FOUND);
   });
 
-  it('Get one bike owner [GET /bike-owner/:bikeOwnerId] fails because params is not a number', async () => {
+  it('Get one bike owner [GET /:bikeOwnerId] fails because params is not a number', async () => {
     const { bikeOwner } = await runSeeder(CreateBikeOwnerTest);
 
     const { body: bodyToken } = await loginBikeOwner(app, {

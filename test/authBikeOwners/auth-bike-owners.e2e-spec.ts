@@ -6,7 +6,7 @@ import CreateBikeOwnerTest from '../../db/seeds/test/createBikeOwner';
 import { loginBikeOwner } from './api';
 import CreatePoliceOfficerTest from '../../db/seeds/test/createPoliceOfficer';
 
-describe('[Feature] Auth - /auth-bike-owner', () => {
+describe('[Feature] Auth Bike Owner- /auth-bike-owner', () => {
   let app: INestApplication;
 
   beforeAll(async () => {

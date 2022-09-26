@@ -246,7 +246,7 @@ describe('[Feature] bike - /bikes', () => {
     );
   });
 
-  it('Get one bike [GET /bikes/:bikeId]', async () => {
+  it('Get one bike [GET /:bikeId]', async () => {
     const { bike } = await runSeeder(CreateBikeTest);
 
     const { statusCode, body } = await getBike(app, bike.id);
@@ -259,7 +259,7 @@ describe('[Feature] bike - /bikes', () => {
     expect(new Date(body.date).getTime()).toBe(new Date(bike.date).getTime());
   });
 
-  it('Get one bike [GET /bikes/:bikeId] fails because id does not exist', async () => {
+  it('Get one bike [GET /:bikeId] fails because id does not exist', async () => {
     await runSeeder(CreateBikeTest);
 
     const { statusCode } = await getBike(app, 0);
@@ -267,7 +267,7 @@ describe('[Feature] bike - /bikes', () => {
     expect(statusCode).toBe(HttpStatus.NOT_FOUND);
   });
 
-  it('Get one bike [GET /bikes/:bikeId] fails because params is not a number', async () => {
+  it('Get one bike [GET /:bikeId] fails because params is not a number', async () => {
     await runSeeder(CreateBikeTest);
 
     const { statusCode } = await getBike(app, 'fake-id');

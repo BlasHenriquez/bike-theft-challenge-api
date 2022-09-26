@@ -338,7 +338,7 @@ describe('[Feature] policeOfficer - /police-officers', () => {
     expect(statusCode).toBe(HttpStatus.UNAUTHORIZED);
   });
 
-  it('Get one police officer [GET /police-officers/:policeOfficerId]', async () => {
+  it('Get one police officer [GET :policeOfficerId]', async () => {
     const { policeDirector } = await runSeeder(CreateDirectorPolice);
 
     const { body: bodyToken } = await loginPoliceOfficer(app, {
@@ -361,7 +361,7 @@ describe('[Feature] policeOfficer - /police-officers', () => {
     expect(body.status).toBe(policeDirector.status);
   });
 
-  it('Get one police officer [GET /police-officers/:policeOfficerId] fails because police is not director', async () => {
+  it('Get one police officer [GET :policeOfficerId] fails because police is not director', async () => {
     const { policeOfficer } = await runSeeder(CreatePoliceOfficerTest);
 
     const { body: bodyToken } = await loginPoliceOfficer(app, {
@@ -379,7 +379,7 @@ describe('[Feature] policeOfficer - /police-officers', () => {
     expect(statusCode).toBe(HttpStatus.UNAUTHORIZED);
   });
 
-  it('Get one police officer [GET /police-officers/:policeOfficerId] fails because is not police', async () => {
+  it('Get one police officer [GET :policeOfficerId] fails because is not police', async () => {
     const { policeOfficer } = await runSeeder(CreatePoliceOfficerTest);
 
     const { bikeOwner } = await runSeeder(CreateBikeOwnerTest);
@@ -399,7 +399,7 @@ describe('[Feature] policeOfficer - /police-officers', () => {
     expect(statusCode).toBe(HttpStatus.UNAUTHORIZED);
   });
 
-  it('Get one police officer [GET /police-officers/:policeOfficerId] fails because id does not exist', async () => {
+  it('Get one police officer [GET :policeOfficerId] fails because id does not exist', async () => {
     const { policeDirector } = await runSeeder(CreateDirectorPolice);
 
     const { body: bodyToken } = await loginPoliceOfficer(app, {
@@ -414,7 +414,7 @@ describe('[Feature] policeOfficer - /police-officers', () => {
     expect(statusCode).toBe(HttpStatus.NOT_FOUND);
   });
 
-  it('Get one police officer [GET /police-officers/:policeOfficerId] fails because params is not a number', async () => {
+  it('Get one police officer [GET :policeOfficerId] fails because params is not a number', async () => {
     const { policeDirector } = await runSeeder(CreateDirectorPolice);
 
     const { body: bodyToken } = await loginPoliceOfficer(app, {

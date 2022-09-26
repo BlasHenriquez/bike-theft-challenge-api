@@ -514,7 +514,7 @@ describe('[Feature] bikeReport - /bike-reports', () => {
     expect(bodyUpdate.addressTheft).toBe('Calle Pablo Luna');
   });
 
-  it('Update one police offer [PUT /:bikeReportId]fails because column is fake', async () => {
+  it('Update one bike report [PUT /:bikeReportId]fails because column is fake', async () => {
     await runSeeder(CreatePoliceOfficerTest);
     const { report, bikeOwner } = await runSeeder(
       CreateBikeReportInvestigatingTest,
@@ -533,7 +533,7 @@ describe('[Feature] bikeReport - /bike-reports', () => {
     expect(statusCode).toEqual(HttpStatus.BAD_REQUEST);
   });
 
-  it('Update one police offer [PUT /:bikeReportId] fails because id does not exist', async () => {
+  it('Update one bike report [PUT /:bikeReportId] fails because id does not exist', async () => {
     await runSeeder(CreatePoliceOfficerTest);
     const { bikeOwner } = await runSeeder(CreateBikeReportInvestigatingTest);
 
@@ -551,7 +551,7 @@ describe('[Feature] bikeReport - /bike-reports', () => {
     expect(statusCode).toEqual(HttpStatus.NOT_FOUND);
   });
 
-  it('Update one police offer [PUT /:bikeReportId] fails because id is not a number', async () => {
+  it('Update one bike report [PUT /:bikeReportId] fails because id is not a number', async () => {
     await runSeeder(CreatePoliceOfficerTest);
     const { bikeOwner } = await runSeeder(CreateBikeReportInvestigatingTest);
 
