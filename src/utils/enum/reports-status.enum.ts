@@ -1,0 +1,5 @@
+export enum StatusReport {
+  PENDING = 'PENDING',
+  INVESTIGATING = 'INVESTIGATING',
+  RESOLVED = 'RESOLVED',
+}

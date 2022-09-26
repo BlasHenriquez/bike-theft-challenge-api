@@ -1,0 +1,6 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+
+echo "\033[0;96m>>>> Lint staged"
+npx lint-staged
