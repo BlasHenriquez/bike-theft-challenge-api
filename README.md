@@ -29,6 +29,11 @@ Bikes theft challenge framework TypeScript starter repository.
 
    `cp .env.example .env`
 
+2. Add the keys of sendGrid to `.env` and `.env.test` in the same root folder:
+
+   `cp .env.example .env`
+   `cp .env.test .env`
+
 ## Database configuration
 
 1. In the root of the API project, edit the file `.env` and configure these parameters using your Postgres configuration.
